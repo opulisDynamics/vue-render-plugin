@@ -1,8 +1,10 @@
 import './filters';
+import KismetNode from './KismetNode.vue';
 import Node from './Node.vue';
 import Socket from './Socket.vue';
 import Vue from 'vue';
 import mixin from './mixin';
+
 
 function createVue(el, vueComponent, vueProps) {
     const app = new Vue({
@@ -22,6 +24,8 @@ function createNode(editor, { el, node, component, bindSocket, bindControl }) {
     const vueProps = { ...component.props, node, editor, bindSocket, bindControl };
     const app = createVue(el, vueComponent, vueProps);
 
+    window.DEBUG && window.DEBUG();
+
     node.vueContext = app.$children[0];
 
     return app;
@@ -31,7 +35,7 @@ function createControl(editor, { el, control }) {
     const vueComponent = control.component;
     const vueProps = { ...control.props, getData: control.getData.bind(control), putData: control.putData.bind(control) };
     const app = createVue(el, vueComponent, vueProps);
-
+    
     control.vueContext = app.$children[0];
 
     return app;
@@ -68,6 +72,7 @@ function install(editor, params) {
 export default {
     name: 'vue-render',
     install,
+    KismetNode,
     mixin,
     Node,
     Socket
