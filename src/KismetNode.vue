@@ -1,11 +1,21 @@
 <template lang="pug">
 .node(:class="[selected(), node.name, node.tag?'node-'+node.tag:'node'] | kebab")
-  .title {{node.name}}
+  .title 
+    span {{ node.DisplayName || node.name}}
+
+  // Inputs (before outputs to auto-flow them to top)
+  .input(v-for='input in inputs()')
+    Socket(v-socket:input="input", type="input", :socket="input.socket" :connected="input.hasConnection()")
+    .input-title {{input.name}}
+    .input-control(
+      v-show='input.showControl()'
+      v-control="input.control"
+    )
 
   // Outputs
   .output(v-for='output in outputs()')
     .output-title {{output.name}}
-    Socket(v-socket:output="output", type="output", :socket="output.socket")
+    Socket(v-socket:output="output", type="output", :socket="output.socket" :connected="output.hasConnection()")
 
   // Controls
   .control(
@@ -13,14 +23,7 @@
     v-control="control"
   )
 
-  // Inputs
-  .input(v-for='input in inputs()')
-    Socket(v-socket:input="input", type="input", :socket="input.socket")
-    .input-title(v-show='!input.showControl()') {{input.name}}
-    .input-control(
-      v-show='input.showControl()'
-      v-control="input.control"
-    )
+  
 </template>
 
 <script>
@@ -49,6 +52,10 @@ export default {
   box-sizing: content-box
   position: relative
   user-select: none
+  display: grid
+  grid-template-columns: repeat(2, auto)
+  grid-template-rows: 34px repeat(auto-fill, minmax(34px, 1fr))
+  grid-auto-flow: dense
   &:hover
     background: lighten($node-color,4%)
   &.selected
@@ -56,13 +63,16 @@ export default {
     border-color: #e3c000
   .title
     color: white
-    font-family: sans-serif
     font-size: 18px
     padding: 8px
+    grid-column: 1 / 3
+    grid-row: 1 / 2
   .output
     text-align: right
+    grid-column: 2 / 3
   .input
     text-align: left
+    grid-column: 1 / 2
   .input-title,.output-title
     vertical-align: middle
     color: white
@@ -73,9 +83,9 @@ export default {
     line-height: $socket-size
   .input-control
     z-index: 1
-    width: calc(100% - #{$socket-size + 2*$socket-margin})
     vertical-align: middle
     display: inline-block
   .control
     padding: $socket-margin $socket-size/2 + $socket-margin
+    grid-column: 1 / 3
 </style>

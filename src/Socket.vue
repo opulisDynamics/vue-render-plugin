@@ -1,13 +1,13 @@
 <template lang="pug">
 .socket(
-  :class="[type, socket.name] | kebab",
-  :title="socket.name+'\\n'+socket.hint"
+  :class="[type, socket.name, connected ? 'connected' : 'unconnected'] | kebab",
+  :title="socket.name+'\\n'+((socket.data && socket.data.hint) ? socket.hint : '')"
 )
 </template>
 
 <script>
 export default {
-  props: ['type', 'socket']
+        props: ['type', 'socket', 'connected']
 }
 </script>
 

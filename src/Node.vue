@@ -1,7 +1,7 @@
 <template lang="pug">
 .node(:class="[selected(), node.name] | kebab")
   .title {{node.name}}
-
+    
   // Outputs
   .output(v-for='output in outputs()')
     .output-title {{output.name}}
